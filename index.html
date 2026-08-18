@@ -1,0 +1,424 @@
+<!-- TO RUN THIS USE HOTOE v1 -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="id" content="com.lock.hotoe-screenlock">
+    <meta name="developer" content="kidai">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+            -ms-user-select: none;  
+            user-select: none;
+        }
+
+        body {
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            vertical-align: middle;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            opacity: 1;
+            transition: all .2s ease;
+            cursor: pointer;
+        }
+
+        body.fade {
+            opacity: 1;
+        }
+
+        body.rejected {
+            transition: all .2s ease;
+            background-color: rgb(47, 12, 12);
+            opacity: 1;
+        }
+
+        body.exiting {
+            transition: all .2s ease;
+            background-color: rgb(12, 65, 5);
+            opacity: 1;
+        }
+
+        .wrapper {
+            width: 100vw;
+            position: fixed;
+            bottom: 50%;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 2;
+            color: #fff;
+        }
+
+        .wrapper div {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .what {
+            font-family: Courier;
+            font-size: 40px;
+            font-weight: 100;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+
+        input:focus {
+            outline: none;
+            padding: 5px 10px;
+        }
+
+        input::placeholder { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
+
+        #input {
+            opacity: 0;
+            position: absolute;
+        }
+
+        #label {
+            border-radius: 999px;
+            height: 30px;
+            font-size: 21px;
+            font-family: Courier;
+            color: white;
+            background: #000;
+            border: 2px dotted white ;
+            padding: 7px 10px 0 10px;
+            transition: all .2s ease-in-out;
+            letter-spacing: 1px;
+            width: 40px;
+            justify-self: center;
+            align-self: center;
+            transition: width 0.7s ease, opacity 1.1s ease;
+            text-align: center;
+            opacity: 0;
+        }
+
+        #label.fade {
+            width: 60%;
+            opacity: 0.7;
+            max-width: 90%;
+        }
+
+        #label.destroy {
+            transition: all .2s ease;
+            opacity: 0;
+        }
+        .what.fade {
+            transition: all .6s ease;
+            opacity: 0;
+        }
+        svg.fade { opacity: 0;}
+
+        .what {
+            opacity: 0;
+        }
+
+        .what.appear { transition: all 2.5s ease; opacity: 1;}
+    </style>
+</head>
+<body SIR>
+    <canvas id="lensCanvas" style="position: fixed; top:0; left:0; width:100vw; height:100vh; z-index:-1;"></canvas>
+    <input placeholder="" onchange="unlock_check(this.value)" id="input" oninput="if (!request_animation_stop) {ll.value = '(¬_¬``) ~shhh. I see you like femboys?'.slice(0, this.value.length); if (this.value.length >= 10) ll.style.width = `90%`}">
+    <div class="wrapper"><div><p class="what">please, login to continue</p><input id="label" onmousemove="event.stopPropagation()" onclick="event.stopPropagation()" type="text" onfocus="event.stopPropagation();document.querySelector('#input').focus();" placeholder="password"></div></div>
+<script>
+let wid = 0;
+let fid = 0;
+let tmp = null;
+const body = document.querySelector('body');
+const svg = document.querySelector('svg');
+const ll = document.getElementById('label');
+const computedW = ll.getBoundingClientRect().width;
+
+const canvas = document.getElementById('lensCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = innerWidth * devicePixelRatio;
+  canvas.height = innerHeight * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+}
+resizeCanvas();
+addEventListener('resize', resizeCanvas);
+const PHASES = {
+  reach: 450,  // limbs stretch from center out toward the corners
+  hold:  100,  // pause — let the star sit there fully formed
+  fill:  120,  // whole star scales up from its center until it swallows the screen
+};
+const TOTAL = PHASES.reach + PHASES.hold + PHASES.fill;
+const WAIST_RATIO = 0.03; // smaller = thinner, sharper spikes. 
+
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+function easeInCubic(x)  { return x * x * x; }
+
+function quadrantPath(ctx, cx, cy, s, r, qx, qy) {
+  const P1 = [cx, cy + qy * r];
+  const P2 = [cx + qx * r, cy];
+  const D  = [cx + qx * s, cy];
+  const C  = [cx + qx * s, cy + qy * s];
+  const B  = [cx, cy + qy * s];
+
+  ctx.moveTo(...P2);
+  ctx.lineTo(...D);
+  ctx.lineTo(...C);
+  ctx.lineTo(...B);
+  ctx.lineTo(...P1);
+  ctx.arcTo(cx, cy, ...P2, r);
+  ctx.closePath();
+}
+
+function starPoints(cx, cy, s, r) {
+  // s = tip reach (distance along the axes — up/down/left/right)
+  // d (r) = waist reach (how far the concave notch sits out on the diagonals)
+  const d = r * 0.8; 
+  return [
+    [cx,     cy - s], // N tip
+    [cx + d, cy - d], // NE waist
+    [cx + s, cy    ], // E tip
+    [cx + d, cy + d], // SE waist
+    [cx,     cy + s], // S tip
+    [cx - d, cy + d], // SW waist
+    [cx - s, cy    ], // W tip
+    [cx - d, cy - d], // NW waist
+  ];
+}
+
+function drawStar(cx, cy, s, r) {
+  const pts = starPoints(cx, cy, s, r);
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.closePath();
+  ctx.fillStyle = 'white';
+  ctx.fill();
+}
+
+
+function drawStarMask(elapsed) {
+  const W = innerWidth, H = innerHeight;
+  const cx = W / 2, cy = H / 2;
+
+  const sReach = Math.max(cx, cy);
+  const sFill  = Math.hypot(W, H) * 2.2;
+
+  let s;
+  if (elapsed < PHASES.reach) {
+    s = sReach * easeOutCubic(elapsed / PHASES.reach);
+  } else if (elapsed < PHASES.reach + PHASES.hold) {
+    s = sReach;
+  } else {
+    const t = Math.min((elapsed - PHASES.reach - PHASES.hold) / PHASES.fill, 1);
+    s = sReach + (sFill - sReach) * easeInCubic(t);
+  }
+
+  const r = s * WAIST_RATIO;
+
+  ctx.clearRect(0, 0, W, H);
+  drawStar(cx, cy, s, r);
+
+  return elapsed >= TOTAL;
+}
+
+function playIntro(onComplete) {
+  const start = performance.now();
+  function frame(now) {
+    const done = drawStarMask(now - start);
+    if (!done) requestAnimationFrame(frame);
+    else {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
+      onComplete();
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+setTimeout(() => {
+  playIntro(() => {
+    body.classList.add("fade");
+    ll.classList.add("fade");
+    exec("hyprctl activeworkspace -j | jq '.id'").then(res => {
+      wid = parseInt(res.stdout);
+      tmp = setInterval(focus_inactive_worspace, 100);
+    });
+    requestAnimationFrame(renderLens); 
+    canvas.style.filter = "invert(1)";
+    canvas.style.transition = "all 1.5s ease"
+    setTimeout(() => { 
+        canvas.style.filter = "invert(0)";
+        document.querySelector(".what").classList.add("appear")
+    }, 900)
+  });
+}, 50);
+
+function focus_inactive_worspace() {
+    exec(`id=$(hyprctl workspaces -j | jq '[.[].id] | max + 1'); hyprctl eval "hl.dispatch(hl.dsp.focus({ workspace = '$id' }))"`)
+    .then(r => {
+        exec("hyprctl activeworkspace -j | jq '.id'").then(res => fid = parseInt(res.stdout))
+    })
+}
+</script>
+<script>
+let animation_finish = false;
+let request_animation_stop = false;
+let animationId = null;
+const CONFIG = {
+    enabled: true,
+    duration: 1000, 
+    lingering: 200, // how long loading takes after unlocked = true. Used to skip "worspace returning back to normal" animation.
+};
+
+function unlock_check(pass) {
+    request_animation_stop = true;
+    ll.style.width = "20px"
+    const ltmp = setInterval(show_loading, 245)
+    exec("sudo -k", { "timeout": 10000 }).then(r => {
+        exec(`echo "${pass}" | sudo -S -v 2>/dev/null && echo "Valid" || echo "Invalid"`, { "timeout": 10000 })
+        .then(res => {
+            if (res.stdout.trim() === "Valid") { unlock(); return; } 
+            else if (res.stdout.trim() === "Invalid") { reject(); clearInterval(ltmp); ll.style.width = "60%"; }
+            else { unlock(); exec(`notify-send "locker error" ${String(res.stdout) + String(res.stderr)} -u critical`)  }
+        })
+        .catch(err => { unlock(); exec(`notify-send "locker error" ${err.message} -u critical`) })
+    }).catch(err => { unlock(); exec(`notify-send "locker error" ${err.message} -u critical`) })
+}
+function show_loading() {
+    // const symbs = ["/", "—", "\\", "|", "/", "—", "\\", "|", "—"]
+    const symbs = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+    let index = 0;
+    const ltmp = setInterval(() => { if (request_animation_stop) {ll.value = symbs[index]}; index++; }, 30)
+    setTimeout(() => clearInterval(ltmp), 240)
+}
+function reject() {
+    body.classList.add('rejected')
+    document.querySelector('#input').value = ""
+    ll.placeholder = "try again"
+    setTimeout(() => { 
+        body.classList.remove('rejected');
+        request_animation_stop = false;
+        ll.value = ""
+    }, 300)
+}
+function unlock() {
+    request_animation_stop = true;
+    document.querySelector('.what').textContent = "welcome!";
+    document.querySelector('.what').classList.add("fade")
+    clearInterval(tmp);
+    setTimeout(() => {
+        appear_and_exit();
+        exec(`hyprctl eval "hl.dispatch(hl.dsp.focus({ workspace = '${wid}' }))"`)
+    }, 500)
+}
+function appear_and_exit() {
+    setTimeout(play_animation, CONFIG["lingering"]);
+    setTimeout(()=>CLOSE(), CONFIG["enabled"]? CONFIG["duration"] + CONFIG["lingering"] : CONFIG["lingering"]);
+}
+function play_animation() {
+    const canvas = document.getElementById('tearCanvas');
+    if (!CONFIG["enabled"]) {
+        canvas.style.display = "none";
+        body.style.backgroundColor = "black";
+        body.classList.remove("fade")
+        return;
+    }
+
+    body.style.transformOrigin = "center center";
+    body.style.willChange = "transform";
+
+    const STEPS = [
+        { sx: 1.18, sy: 0.82, dur: 85, pause: 100 }, 
+        { sx: 0.01, sy: 0.6,  dur: 90, pause: 100 }, 
+        { sx: 0.9,  sy: 0.002, dur: 75, pause: 100 },
+        { sx: 0,    sy: 0,    dur: 50, pause: 0  }, 
+    ];
+
+
+    setTimeout(() => body.style.filter = "invert(1)", STEPS[0]["pause"])
+
+    let i = 0;
+    function nextStep() {
+        if (i >= STEPS.length) return;
+        const s = STEPS[i];
+        const type = "cubic-bezier(0.1, 0.9, 0.2, 1)"
+        body.style.transition = `transform ${s.dur}ms ${type}`;
+        body.style.transform = `scale(${s.sx}, ${s.sy})`;
+        i++;
+        setTimeout(nextStep, s.dur + s.pause);
+    }
+    nextStep();
+}
+</script>
+<script>
+const mask = document.getElementById('lensMask');
+const mask_inner = '<rect x="0" y="0" width="100%" height="100%" fill="white"></rect>';
+let MAX_R = 75;
+const MIN_R = 10;
+const LIFETIME = 1000;
+let points = [];
+
+function renderLens() {
+  const now = performance.now();
+  points = points.filter(p => now - p.born < LIFETIME);
+
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, innerWidth, innerHeight); 
+
+  ctx.globalCompositeOperation = 'destination-out';
+  for (const p of points) {
+    const age = (now - p.born) / LIFETIME;
+    const eased = Math.sin(Math.min(age, 1) * Math.PI);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r * eased, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'source-over';
+
+  requestAnimationFrame(renderLens);
+}
+
+let lastPoint = null;
+document.addEventListener('mousemove', (e) => {
+    if (request_animation_stop) return;
+    const now = performance.now();
+    const x = e.clientX, y = e.clientY;
+
+    if (lastPoint) {
+        const dx = x - lastPoint.x;
+        const dy = y - lastPoint.y;
+        const dist = Math.hypot(dx, dy);
+        const spacing = MAX_R * 0.1; // how densely to fill the gap; smaller = denser
+        const steps = Math.floor(dist / spacing);
+
+        for (let i = 1; i <= steps; i++) {
+        const t = i / (steps + 1);
+        points.push({
+            x: lastPoint.x + dx * t,
+            y: lastPoint.y + dy * t,
+            born: now,
+            r: MAX_R
+        });
+        }
+    }
+
+    points.push({ x, y, born: now, r: MAX_R  });
+    lastPoint = { x, y };
+    
+});
+
+document.addEventListener('mousedown', (e) => MAX_R = 200)
+document.addEventListener('mouseup', (e) => MAX_R = 75)
+</script>
+</body>
+</html>
