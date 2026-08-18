@@ -26,7 +26,7 @@
   <a href="#requirements">requirements</a><br>
   <a href="#usage">usage</a><br>
 </p>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 
 ## requirements:
@@ -34,7 +34,7 @@
 + Hyprland (Latest versions of)
 
 <p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## How it works
 Calling *Selor* activates a sequence of hyprctl calls. <br>
@@ -61,7 +61,7 @@ It does **not** draw a window in **session_lock_layer** as many other lockscreen
 _(You better consider adding some flags to disable these kind of binds when the Selor is running to have full protection)_
 
 <p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 
 ## configuration
@@ -83,5 +83,4 @@ In the current code you can setup:
 `spacing` — how densely to fill the gap when you draw (higher => less dense => easier for your GPU)
 
 <p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
