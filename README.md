@@ -15,7 +15,7 @@
 </p>
 
 
-<h3><p align=center>Hyprland lockscreen built using HTML</p></h3>
+<h3><p align=center>Lockscreen for Hyprland that keeps your session alive</p></h3>
 <p align=center>
   <a href="https://github.com/user-attachments/assets/0d7c5647-472a-4a94-958e-7bc422fa57c5">full demo</a><br><br>
   <sub>why it's different ↓</sub><br>
