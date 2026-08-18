@@ -30,7 +30,7 @@
 
 
 ## requirements:
-+ [hotoe](https://github.com/KartofellFirst/hotoe)
++ [Hotoe](https://github.com/KartofellFirst/hotoe)
 + Hyprland (Latest versions of)
 
 <p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
@@ -65,22 +65,36 @@ _(You better consider adding some flags to disable these kind of binds when the 
 
 
 ## configuration
-Because Selor is built with HTML, it's highly customizable. Every free AI can help you with that if you don’t know frontend yourself, because it's that easy<br>
-You can:
-- Add sounds / pictures / videos / mini-games / widgets
-- Remove everything or rewrite as you think it will be better
+Because Selor is built with HTML, it's highly customizable. <br>
+If you don’t know frontend yourself, rougly every free AI from 2023 and newer can help you with that <br>
 
-In the current code you can setup:
-`WAIST_RATIO` — How thin the star is<br>
-`PHASES` — duration of each intro phase<br>
+In the current code you can setup: <br><br>
+`WAIST_RATIO` — How thin the star is <br>
+`PHASES` — duration of each intro phase <br>
 <br>
-`CONFIG.enabled` — enable outro
-`CONFIG.lingering` — delay after login (if set to 0 you'll be seeing your workspace switching back to normal animation)
+`CONFIG.enabled` — enable outro <br>
+`CONFIG.lingering` — delay after login (if set to 0 you'll be seeing your workspace switching back to normal animation) <br>
 <br>
-`STEPS` — outro animation steps
+`STEPS` — outro animation steps <br>
 <br>
-`LIFETIME` — drawing line lifetime before disappearing
-`spacing` — how densely to fill the gap when you draw (higher => less dense => easier for your GPU)
+`LIFETIME` — drawing line lifetime before disappearing <br>
+`spacing` — how densely to fill the gap when you draw (higher => less dense => easier for your GPU) <br>
 
 <p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+## usage 
+Install latest [Hotoe](https://github.com/KartofellFirst/hotoe) release <br>
+Get to the directory with index.html in your terminal<br>
+Run `hotoe run`
+
+**OR**
+
+To bind it to your config: <br>
+`hotoe run -w=/path/to/the/directory`<br>
+where `/path/to/the/directory` is a global path to the project directory. But in this usecase `.hotoe` folder will be created in your `~` directory. To avoid that, again, call hotoe from ~/tmp or wherever you can accept it's saving temporary files
+
+<p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+
