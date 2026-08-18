@@ -74,6 +74,7 @@ In the current code you can setup: <br><br>
 <br>
 `CONFIG.enabled` — enable outro <br>
 `CONFIG.lingering` — delay after login (if set to 0 you'll be seeing your workspace switching back to normal animation) <br>
+`CONFIG.duration` — if shorter than STEPS total duration, it will kill the process before animation finishes
 <br>
 `STEPS` — outro animation steps <br>
 <br>
