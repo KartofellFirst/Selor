@@ -32,7 +32,7 @@
 + [Hotoe](https://github.com/KartofellFirst/hotoe)
 + Hyprland (Latest versions of)
 
-<p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
+<p align=center><a href="#lockscreen-for-hyprland-that-keeps-your-session-alive">back</a></p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## How it works
@@ -59,7 +59,7 @@ It does **not** draw a window in **session_lock_layer** as many other lockscreen
 
 _(You better consider adding some flags to disable these kind of binds when the Selor is running to have full protection)_
 
-<p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
+<p align=center><a href="#lockscreen-for-hyprland-that-keeps-your-session-alive">back</a></p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 
@@ -80,7 +80,7 @@ In the current code you can setup: <br><br>
 `LIFETIME` — drawing line lifetime before disappearing <br>
 `spacing` — how densely to fill the gap when you draw (higher => less dense => easier for your GPU) <br>
 
-<p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
+<p align=center><a href="#lockscreen-for-hyprland-that-keeps-your-session-alive">back</a></p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## usage 
@@ -94,7 +94,7 @@ To bind it to your config: <br>
 `hotoe run -w=/path/to/the/directory`<br>
 where `/path/to/the/directory` is a global path to the project directory. But in this usecase `.hotoe` folder will be created in your `~` directory. To avoid that, again, call hotoe from ~/tmp or wherever you can accept it's saving temporary files
 
-<p align=center><a href="#hyprland-lockscreen-built-using-html">back</a></p>
+<p align=center><a href="#lockscreen-for-hyprland-that-keeps-your-session-alive">back</a></p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 
